@@ -26,11 +26,52 @@ use crate::{
         self, full_merge_callback, partial_merge_callback, MergeFn, MergeOperatorCallback,
     },
     slice_transform::SliceTransform,
-    Snapshot,
+    Error, Snapshot,
 };
 
 pub fn new_cache(capacity: size_t) -> *mut ffi::rocksdb_cache_t {
     unsafe { ffi::rocksdb_cache_create_lru(capacity) }
+}
+
+pub struct Cache {
+    pub(crate) inner: *mut ffi::rocksdb_cache_t,
+}
+
+impl Cache {
+    /// Create a lru cache with capacity
+    pub fn new_lru_cache(capacity: size_t) -> Result<Cache, Error> {
+        let cache = new_cache(capacity);
+        if cache.is_null() {
+            Err(Error::new("Could not create Cache".to_owned()))
+        } else {
+            Ok(Cache { inner: cache })
+        }
+    }
+
+    /// Returns the Cache memory usage
+    pub fn get_usage(&self) -> usize {
+        unsafe { ffi::rocksdb_cache_get_usage(self.inner) }
+    }
+
+    /// Returns pinned memory usage
+    pub fn get_pinned_usage(&self) -> usize {
+        unsafe { ffi::rocksdb_cache_get_pinned_usage(self.inner) }
+    }
+
+    /// Sets cache capacity
+    pub fn set_capacity(&mut self, capacity: size_t) {
+        unsafe {
+            ffi::rocksdb_cache_set_capacity(self.inner, capacity);
+        }
+    }
+}
+
+impl Drop for Cache {
+    fn drop(&mut self) {
+        unsafe {
+            ffi::rocksdb_cache_destroy(self.inner);
+        }
+    }
 }
 
 /// Database-wide options around performance and behavior.

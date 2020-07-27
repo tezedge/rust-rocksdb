@@ -78,7 +78,7 @@ pub use crate::{
     db::DB,
     db_iterator::{DBIterator, DBRawIterator, DBWALIterator, Direction, IteratorMode},
     db_options::{
-        BlockBasedIndexType, BlockBasedOptions, DBCompactionStyle, DBCompressionType,
+        BlockBasedIndexType, BlockBasedOptions, Cache, DBCompactionStyle, DBCompressionType,
         DBRecoveryMode, DataBlockIndexType, FlushOptions, MemtableFactory, Options,
         PlainTableFactoryOptions, ReadOptions, WriteOptions,
     },
