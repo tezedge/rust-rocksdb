@@ -215,6 +215,12 @@ fn build_rocksdb() {
     config.file("build_version.cc");
 
     config.cpp(true);
+    if let Ok(rust_flags) = env::var("RUSTFLAGS") {
+        // TODO: parse it properly
+        if rust_flags.contains("force-frame-pointers=yes") {
+            config.force_frame_pointer(true);
+        }
+    }
     config.compile("librocksdb.a");
 }
 
@@ -244,6 +250,12 @@ fn build_snappy() {
     config.file("snappy/snappy-sinksource.cc");
     config.file("snappy/snappy-c.cc");
     config.cpp(true);
+    if let Ok(rust_flags) = env::var("RUSTFLAGS") {
+        // TODO: parse it properly
+        if rust_flags.contains("force-frame-pointers=yes") {
+            config.force_frame_pointer(true);
+        }
+    }
     config.compile("libsnappy.a");
 }
 
@@ -264,6 +276,12 @@ fn build_lz4() {
         compiler.flag("-fno-tree-vectorize");
     }
 
+    if let Ok(rust_flags) = env::var("RUSTFLAGS") {
+        // TODO: parse it properly
+        if rust_flags.contains("force-frame-pointers=yes") {
+            compiler.force_frame_pointer(true);
+        }
+    }
     compiler.compile("liblz4.a");
 }
 
