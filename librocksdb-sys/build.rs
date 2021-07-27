@@ -204,6 +204,12 @@ fn build_rocksdb() {
     config.file("build_version.cc");
 
     config.cpp(true);
+    if let Ok(rust_flags) = env::var("RUSTFLAGS") {
+        // TODO: parse it properly
+        if rust_flags.contains("force-frame-pointers=yes") {
+            config.force_frame_pointer(true);
+        }
+    }
     config.compile("librocksdb.a");
 }
 
@@ -233,6 +239,12 @@ fn build_snappy() {
     config.file("snappy/snappy-sinksource.cc");
     config.file("snappy/snappy-c.cc");
     config.cpp(true);
+    if let Ok(rust_flags) = env::var("RUSTFLAGS") {
+        // TODO: parse it properly
+        if rust_flags.contains("force-frame-pointers=yes") {
+            config.force_frame_pointer(true);
+        }
+    }
     config.compile("libsnappy.a");
 }
 
@@ -253,6 +265,12 @@ fn build_lz4() {
         compiler.flag("-fno-tree-vectorize");
     }
 
+    if let Ok(rust_flags) = env::var("RUSTFLAGS") {
+        // TODO: parse it properly
+        if rust_flags.contains("force-frame-pointers=yes") {
+            compiler.force_frame_pointer(true);
+        }
+    }
     compiler.compile("liblz4.a");
 }
 
@@ -282,6 +300,13 @@ fn build_zstd() {
     compiler.extra_warnings(false);
 
     compiler.define("ZSTD_LIB_DEPRECATED", Some("0"));
+
+    if let Ok(rust_flags) = env::var("RUSTFLAGS") {
+        // TODO: parse it properly
+        if rust_flags.contains("force-frame-pointers=yes") {
+            compiler.force_frame_pointer(true);
+        }
+    }
     compiler.compile("libzstd.a");
 }
 
@@ -300,6 +325,13 @@ fn build_zlib() {
     compiler.flag_if_supported("-Wno-implicit-function-declaration");
     compiler.opt_level(3);
     compiler.extra_warnings(false);
+
+    if let Ok(rust_flags) = env::var("RUSTFLAGS") {
+        // TODO: parse it properly
+        if rust_flags.contains("force-frame-pointers=yes") {
+            compiler.force_frame_pointer(true);
+        }
+    }
     compiler.compile("libz.a");
 }
 
@@ -322,6 +354,13 @@ fn build_bzip2() {
     compiler.extra_warnings(false);
     compiler.opt_level(3);
     compiler.extra_warnings(false);
+
+    if let Ok(rust_flags) = env::var("RUSTFLAGS") {
+        // TODO: parse it properly
+        if rust_flags.contains("force-frame-pointers=yes") {
+            compiler.force_frame_pointer(true);
+        }
+    }
     compiler.compile("libbz2.a");
 }
 
